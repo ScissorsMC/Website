@@ -1,11 +1,120 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import { getFillVersions } from '../lib/builds';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+let latestVersion: string | null = null;
+try {
+    const versions = await getFillVersions();
+    latestVersion = versions.find((v) => v.status === 'SUPPORTED')?.id ?? versions[0]?.id ?? null;
+} catch {
+    // CTA falls back to the downloads index.
+}
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300');
 ---
 
 <Layout>
-	<Welcome />
+    <svg
+        class="pointer-events-none fixed inset-0 -z-10 h-full w-full"
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+    >
+        <defs>
+            <radialGradient id="glow" cx="0.75" cy="0.2" r="0.7">
+                <stop offset="0" stop-color="#aebfd0" stop-opacity="0.07"></stop>
+                <stop offset="1" stop-color="#aebfd0" stop-opacity="0"></stop>
+            </radialGradient>
+        </defs>
+        <rect width="1440" height="900" fill="url(#glow)"></rect>
+        <path
+            id="cut-path-a"
+            class="cut cut-a"
+            d="M -60 210 C 420 150, 900 290, 1500 190"
+            fill="none"
+            stroke="#aebfd0"
+            stroke-opacity="0.16"
+            stroke-width="1.5"
+            stroke-dasharray="10 14"></path>
+        <path
+            class="cut cut-b"
+            d="M -60 560 C 380 500, 1020 640, 1500 510"
+            fill="none"
+            stroke="#aebfd0"
+            stroke-opacity="0.1"
+            stroke-width="1.5"
+            stroke-dasharray="10 14"></path>
+        <path
+            class="cut cut-c"
+            d="M -60 800 C 500 740, 980 870, 1500 780"
+            fill="none"
+            stroke="#aebfd0"
+            stroke-opacity="0.07"
+            stroke-width="1.5"
+            stroke-dasharray="10 14"></path>
+        <g
+            transform="translate(127 195.8) rotate(-1.8) scale(1.15) translate(-12 -12)"
+            fill="none"
+            stroke="#aebfd0"
+            stroke-opacity="0.4"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <circle cx="6" cy="6" r="3"></circle>
+            <path d="M8.12 8.12 12 12"></path>
+            <path d="M20 4 8.12 15.88"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <path d="M14.8 14.8 20 20"></path>
+        </g>
+    </svg>
+
+    <section class="flex min-h-[75vh] flex-col justify-center py-24">
+        <h1 class="font-display max-w-3xl text-5xl font-bold tracking-tight text-balance sm:text-6xl">
+            Cut the <span class="text-steel-bright line-through decoration-steel/60 decoration-dashed decoration-2"
+                >exploits</span
+            > out of Creative Mode.
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg text-fog">
+            Scissors is a Paper fork that patches exploits Paper won't. Drop it into your
+            server and instantly patch many exploits.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+            <a
+                href={latestVersion ? `/downloads/${latestVersion}` : '/downloads'}
+                class="font-display rounded-md bg-steel px-6 py-3 font-medium text-ink transition-colors hover:bg-steel-bright"
+            >
+                {latestVersion ? `Download Scissors ${latestVersion}` : 'Download Scissors'}
+            </a>
+            <a
+                href="/downloads"
+                class="font-display rounded-md border border-edge px-6 py-3 font-medium text-paper transition-colors hover:border-fog"
+            >
+                All versions
+            </a>
+        </div>
+    </section>
 </Layout>
+
+<style>
+    .cut {
+        animation: march 80s linear infinite;
+    }
+    .cut-b {
+        animation-duration: 110s;
+        animation-direction: reverse;
+    }
+    .cut-c {
+        animation-duration: 140s;
+    }
+    @keyframes march {
+        to {
+            stroke-dashoffset: -480;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .cut {
+            animation: none;
+        }
+    }
+</style>

@@ -1,0 +1,25 @@
+---
+import type { SupportStatus } from '../lib/builds';
+
+interface Props {
+    status: SupportStatus;
+}
+
+const { status } = Astro.props;
+
+const styles: Record<SupportStatus, string> = {
+    SUPPORTED: 'border-ok/40 text-ok',
+    DEPRECATED: 'border-warn/40 text-warn',
+    UNSUPPORTED: 'border-fog/40 text-fog',
+};
+
+const labels: Record<SupportStatus, string> = {
+    SUPPORTED: 'Supported',
+    DEPRECATED: 'Deprecated',
+    UNSUPPORTED: 'Unsupported',
+};
+---
+
+<span class:list={['rounded-full border px-2.5 py-0.5 font-mono text-xs', styles[status]]}>
+    {labels[status]}
+</span>

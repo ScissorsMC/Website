@@ -1,0 +1,153 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CutLine from '../../components/CutLine.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getFillVersions, LEGACY_VERSIONS, JENKINS_JOB, type FillVersion } from '../../lib/builds';
+
+let fillVersions: FillVersion[] = [];
+let fillError = false;
+try {
+    fillVersions = await getFillVersions();
+    fillError = fillVersions.length === 0;
+} catch {
+    fillError = true;
+}
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300');
+---
+
+<Layout title="Downloads — Scissors">
+    <section class="pt-16 pb-12">
+        <h1 class="font-display text-4xl font-bold tracking-tight">Downloads</h1>
+        <p class="mt-3 max-w-2xl text-fog">
+            Pick a version, grab the jar, and drop it in your server folder.
+        </p>
+    </section>
+
+    <section aria-labelledby="current-heading">
+        <h2 id="current-heading" class="font-display text-xl font-medium">Current</h2>
+        {
+            fillError ? (
+                <p class="mt-4 rounded-md border border-edge bg-surface p-4 text-sm text-fog">
+                    Couldn't load versions right now. Give it a minute and refresh.
+                </p>
+            ) : (
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    {fillVersions.map((v) => (
+                        <a
+                            href={`/downloads/${v.id}`}
+                            class="group flex items-center justify-between rounded-lg border border-edge bg-surface p-5 transition-colors hover:border-fog"
+                        >
+                            <div>
+                                <span class="font-display text-2xl font-bold">{v.id}</span>
+                                {v.javaMinimum && (
+                                    <p class="mt-1 font-mono text-xs text-fog">Java {v.javaMinimum}+</p>
+                                )}
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <StatusBadge status={v.status} />
+                                <svg
+                                    class="h-5 w-5 text-fog transition-colors group-hover:text-paper"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            )
+        }
+    </section>
+
+    <div class="py-12"><CutLine /></div>
+
+    <section aria-labelledby="legacy-heading">
+        <h2 id="legacy-heading" class="font-display text-xl font-medium">Older versions</h2>
+        <p class="mt-2 max-w-2xl text-sm text-fog">
+            These stopped getting updates a while ago, but the last build of each is still here if
+            you need it.
+        </p>
+        <ul class="mt-4 divide-y divide-edge rounded-lg border border-edge bg-surface">
+            {
+                LEGACY_VERSIONS.map((v) => (
+                    <li class="flex items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <span class="font-display w-16 font-bold">{v}</span>
+                            <StatusBadge status="DEPRECATED" />
+                        </div>
+                        <div class="flex items-center gap-5 text-sm">
+                            <a href={`${JENKINS_JOB}/${v}/`} class="hidden text-fog transition-colors hover:text-paper sm:inline">
+                                Jenkins
+                            </a>
+                            <a
+                                href={`/downloads/legacy/${v}`}
+                                class="inline-flex items-center gap-1.5 text-steel transition-colors hover:text-steel-bright"
+                            >
+                                Latest build
+                                <svg
+                                    class="h-4 w-4"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M12 4v11" />
+                                    <path d="m7 11 5 5 5-5" />
+                                    <path d="M5 20h14" />
+                                </svg>
+                            </a>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+
+    <div class="py-12"><CutLine /></div>
+
+    <section aria-labelledby="panels-heading">
+        <h2 id="panels-heading" class="font-display text-xl font-medium">Server panels</h2>
+        <p class="mt-2 max-w-2xl text-sm text-fog">
+            Running Pterodactyl or Pelican? Import the Scissors egg and the panel handles the
+            install for you.
+        </p>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-lg border border-edge bg-surface p-5">
+                <h3 class="font-display font-medium">Pterodactyl</h3>
+                <p class="mt-1 text-sm text-fog">
+                    Admin area → Nests → Import Egg, then select the JSON file.
+                </p>
+                <a
+                    href="/eggs/pterodactyl-scissors.json"
+                    download
+                    class="mt-4 inline-block rounded-md border border-edge px-4 py-2 text-sm text-steel transition-colors hover:border-fog hover:text-steel-bright"
+                >
+                    Download egg (JSON)
+                </a>
+            </div>
+            <div class="rounded-lg border border-edge bg-surface p-5">
+                <h3 class="font-display font-medium">Pelican</h3>
+                <p class="mt-1 text-sm text-fog">
+                    Admin area → Eggs → Import, then select the YAML file.
+                </p>
+                <a
+                    href="/eggs/pelican-scissors.yaml"
+                    download
+                    class="mt-4 inline-block rounded-md border border-edge px-4 py-2 text-sm text-steel transition-colors hover:border-fog hover:text-steel-bright"
+                >
+                    Download egg (YAML)
+                </a>
+            </div>
+        </div>
+    </section>
+</Layout>

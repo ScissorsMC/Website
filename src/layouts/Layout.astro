@@ -1,23 +1,59 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+    title?: string;
+    description?: string;
+}
+
+const {
+    title = 'Scissors — Minecraft server software',
+    description = 'Scissors is a Paper fork that patches the Creative Mode exploits upstream won\'t.',
+} = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <meta name="description" content={description} />
+        <title>{title}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <ClientRouter />
+    </head>
+    <body class="flex min-h-screen flex-col">
+        <header class="border-b border-edge">
+            <nav class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+                <a href="/" class="font-display text-lg font-bold tracking-tight">
+                    <span aria-hidden="true" class="mr-1.5 text-steel">✂&#xFE0E;</span>Scissors
+                </a>
+                <div class="flex items-center gap-6 text-sm text-fog">
+                    <a href="/downloads" class="transition-colors hover:text-paper">Downloads</a>
+                    <a
+                        href="https://github.com/ScissorsMC/Scissors"
+                        class="transition-colors hover:text-paper">GitHub</a
+                    >
+                </div>
+            </nav>
+        </header>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+        <main class="mx-auto w-full max-w-5xl flex-1 px-6">
+            <slot />
+        </main>
+
+        <footer class="mt-20 border-t border-edge">
+            <div class="mx-auto max-w-5xl px-6 py-8 text-sm text-fog">
+                <p>© {new Date().getFullYear()} Scissors</p>
+            </div>
+        </footer>
+    </body>
+</html>
