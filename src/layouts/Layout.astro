@@ -1,4 +1,5 @@
 ---
+import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
@@ -9,7 +10,7 @@ interface Props {
 
 const {
     title = 'Scissors - Minecraft server software',
-    description = 'Scissors is a Paper fork that patches the Creative Mode exploits upstream won\'t.',
+    description = 'Scissors is a Paper fork that patches the Creative Mode exploits Paper refuses to.',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -38,12 +39,8 @@ const ogImage = new URL('/og.png', Astro.site);
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet"
-        />
+        <Font cssVariable="--font-space-grotesk" preload />
+        <Font cssVariable="--font-jetbrains-mono" />
         <ClientRouter />
     </head>
     <body class="flex min-h-screen flex-col">

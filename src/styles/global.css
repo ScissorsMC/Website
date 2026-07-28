@@ -12,8 +12,8 @@
     --color-ok: #4cc38a;
     --color-warn: #f0b429;
 
-    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+    --font-display: var(--font-space-grotesk, ui-sans-serif);
+    --font-mono: var(--font-jetbrains-mono, ui-monospace);
 }
 
 html {
