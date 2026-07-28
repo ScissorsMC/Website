@@ -16,6 +16,10 @@
     --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
 }
 
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
     background-color: var(--color-ink);
     color: var(--color-paper);

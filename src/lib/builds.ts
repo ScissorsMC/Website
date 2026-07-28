@@ -1,7 +1,7 @@
 const FILL = 'https://fill.scissors.gg/v3/projects/scissors';
 export const JENKINS_JOB = 'https://ci.plex.us.org/job/Scissors/job';
 
-// Mainline Jenkins jobs, newest first. All legacy versions are deprecated.
+// Mainline Jenkins jobs, newest first. All legacy versions are unsupported.
 export const LEGACY_VERSIONS = [
     '1.20.6',
     '1.20.4',
