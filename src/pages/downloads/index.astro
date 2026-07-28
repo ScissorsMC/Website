@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CutLine from '../../components/CutLine.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
-import { getFillVersions, LEGACY_VERSIONS, JENKINS_JOB, type FillVersion } from '../../lib/builds';
+import { getFillVersions, LEGACY_VERSIONS, type FillVersion } from '../../lib/builds';
 
 let fillVersions: FillVersion[] = [];
 let fillError = false;
@@ -12,6 +12,9 @@ try {
 } catch {
     fillError = true;
 }
+
+const supported = fillVersions.filter((v) => v.status === 'SUPPORTED');
+const retired = fillVersions.filter((v) => v.status !== 'SUPPORTED');
 ---
 
 <Layout title="Downloads - Scissors">
@@ -29,9 +32,14 @@ try {
                 <p class="mt-4 rounded-md border border-edge bg-surface p-4 text-sm text-fog">
                     Couldn't load versions right now. Give it a minute and refresh.
                 </p>
+            ) : supported.length === 0 ? (
+                <p class="mt-4 rounded-md border border-edge bg-surface p-4 text-sm text-fog">
+                    No version is under active support right now. Grab the newest build from the
+                    list below.
+                </p>
             ) : (
                 <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                    {fillVersions.map((v) => (
+                    {supported.map((v) => (
                         <a
                             href={`/downloads/${v.id}`}
                             class="group flex items-center justify-between rounded-lg border border-edge bg-surface p-5 transition-colors hover:border-fog"
@@ -73,9 +81,15 @@ try {
             install for you.
         </p>
         <div class="mt-4 grid gap-4 sm:grid-cols-2">
-            <div class="rounded-lg border border-edge bg-surface p-5">
+            <div class="group relative overflow-hidden rounded-lg border border-edge bg-surface p-5">
+                <img
+                    src="/panels/pterodactyl.svg"
+                    alt=""
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -right-6 -bottom-10 h-40 w-40 opacity-20 transition-opacity duration-300 group-hover:opacity-45"
+                />
                 <h3 class="font-display font-medium">Pterodactyl</h3>
-                <p class="mt-1 text-sm text-fog">
+                <p class="mt-1 max-w-[75%] text-sm text-fog">
                     Admin area → Nests → Import Egg, then select the JSON file.
                 </p>
                 <a
@@ -86,9 +100,15 @@ try {
                     Download egg (JSON)
                 </a>
             </div>
-            <div class="rounded-lg border border-edge bg-surface p-5">
+            <div class="group relative overflow-hidden rounded-lg border border-edge bg-surface p-5">
+                <img
+                    src="/panels/pelican.svg"
+                    alt=""
+                    aria-hidden="true"
+                    class="pointer-events-none absolute -right-6 -bottom-10 h-40 w-40 opacity-20 transition-opacity duration-300 group-hover:opacity-45"
+                />
                 <h3 class="font-display font-medium">Pelican</h3>
-                <p class="mt-1 text-sm text-fog">
+                <p class="mt-1 max-w-[75%] text-sm text-fog">
                     Admin area → Eggs → Import, then select the YAML file.
                 </p>
                 <a
@@ -112,6 +132,34 @@ try {
         </p>
         <ul class="mt-4 divide-y divide-edge rounded-lg border border-edge bg-surface">
             {
+                retired.map((v) => (
+                    <li class="flex items-center justify-between gap-4 p-4">
+                        <div class="flex items-center gap-4">
+                            <span class="font-display w-16 font-bold">{v.id}</span>
+                            <StatusBadge status={v.status} />
+                        </div>
+                        <a
+                            href={`/downloads/${v.id}`}
+                            class="inline-flex items-center gap-1.5 text-sm text-steel transition-colors hover:text-steel-bright"
+                        >
+                            View builds
+                            <svg
+                                class="h-4 w-4"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </a>
+                    </li>
+                ))
+            }
+            {
                 LEGACY_VERSIONS.map((v) => (
                     <li class="flex items-center justify-between gap-4 p-4">
                         <div class="flex items-center gap-4">
@@ -119,12 +167,9 @@ try {
                             <StatusBadge status="UNSUPPORTED" />
                         </div>
                         <div class="flex items-center gap-5 text-sm">
-                            <a href={`${JENKINS_JOB}/${v}/`} class="hidden text-fog transition-colors hover:text-paper sm:inline">
-                                Jenkins
-                            </a>
                             <a
                                 href={`/downloads/legacy/${v}`}
-                                class="inline-flex items-center gap-1.5 text-steel transition-colors hover:text-steel-bright"
+                                class="hidden items-center gap-1.5 text-fog transition-colors hover:text-paper sm:inline-flex"
                             >
                                 Latest build
                                 <svg
@@ -140,6 +185,24 @@ try {
                                     <path d="M12 4v11" />
                                     <path d="m7 11 5 5 5-5" />
                                     <path d="M5 20h14" />
+                                </svg>
+                            </a>
+                            <a
+                                href={`/downloads/${v}`}
+                                class="inline-flex items-center gap-1.5 text-steel transition-colors hover:text-steel-bright"
+                            >
+                                View builds
+                                <svg
+                                    class="h-4 w-4"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="m9 18 6-6-6-6" />
                                 </svg>
                             </a>
                         </div>

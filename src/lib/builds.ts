@@ -88,6 +88,41 @@ export async function getFillBuilds(version: string): Promise<FillBuild[] | null
     }));
 }
 
+export interface JenkinsBuild {
+    id: number;
+    time: string;
+    download: { name: string; url: string };
+}
+
+export async function getJenkinsBuilds(version: string): Promise<JenkinsBuild[] | null> {
+    const res = await fetch(
+        `${JENKINS_JOB}/${version}/api/json?tree=builds[number,timestamp,result,artifacts[fileName,relativePath]]`,
+        { headers: { 'User-Agent': 'scissors-website (https://scissors.gg)' } },
+    );
+    if (!res.ok) return null;
+    const data: {
+        builds?: {
+            number: number;
+            timestamp: number;
+            result: string;
+            artifacts?: { fileName: string; relativePath: string }[];
+        }[];
+    } = await res.json();
+    return (data.builds ?? [])
+        .filter((b) => b.result === 'SUCCESS' && b.artifacts?.some((a) => a.relativePath.endsWith('.jar')))
+        .map((b) => {
+            const jar = b.artifacts!.find((a) => a.relativePath.endsWith('.jar'))!;
+            return {
+                id: b.number,
+                time: new Date(b.timestamp).toISOString(),
+                download: {
+                    name: jar.fileName,
+                    url: `${JENKINS_JOB}/${version}/${b.number}/artifact/${jar.relativePath}`,
+                },
+            };
+        });
+}
+
 export function formatSize(bytes: number): string {
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
