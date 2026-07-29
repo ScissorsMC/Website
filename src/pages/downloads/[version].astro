@@ -96,6 +96,7 @@ const GITHUB_COMMIT = 'https://github.com/ScissorsMC/Scissors/commit';
                             </div>
                             <a
                                 href={build.download.url}
+                                data-astro-prefetch="false"
                                 class="font-display rounded-md bg-steel px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-steel-bright"
                             >
                                 {build.download.name}
@@ -123,6 +124,7 @@ const GITHUB_COMMIT = 'https://github.com/ScissorsMC/Scissors/commit';
                             {build.download && (
                                 <a
                                     href={build.download.url}
+                                    data-astro-prefetch="false"
                                     class="font-display rounded-md bg-steel px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-steel-bright"
                                 >
                                     {build.download.name}

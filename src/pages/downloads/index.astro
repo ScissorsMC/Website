@@ -95,6 +95,7 @@ const retired = fillVersions.filter((v) => v.status !== 'SUPPORTED');
                 <a
                     href="/eggs/pterodactyl-scissors.json"
                     download
+                    data-astro-prefetch="false"
                     class="mt-4 inline-block rounded-md border border-edge px-4 py-2 text-sm text-steel transition-colors hover:border-fog hover:text-steel-bright"
                 >
                     Download egg (JSON)
@@ -114,6 +115,7 @@ const retired = fillVersions.filter((v) => v.status !== 'SUPPORTED');
                 <a
                     href="/eggs/pelican-scissors.yaml"
                     download
+                    data-astro-prefetch="false"
                     class="mt-4 inline-block rounded-md border border-edge px-4 py-2 text-sm text-steel transition-colors hover:border-fog hover:text-steel-bright"
                 >
                     Download egg (YAML)
@@ -169,6 +171,7 @@ const retired = fillVersions.filter((v) => v.status !== 'SUPPORTED');
                         <div class="flex items-center gap-5 text-sm">
                             <a
                                 href={`/downloads/legacy/${v}`}
+                                data-astro-prefetch="false"
                                 class="hidden items-center gap-1.5 text-fog transition-colors hover:text-paper sm:inline-flex"
                             >
                                 Latest build
