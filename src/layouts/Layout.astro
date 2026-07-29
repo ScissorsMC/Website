@@ -46,8 +46,36 @@ const ogImage = new URL('/og.png', Astro.site);
     <body class="flex min-h-screen flex-col">
         <header class="border-b border-edge">
             <nav class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-                <a href="/" class="font-display text-lg font-bold tracking-tight">
-                    <span aria-hidden="true" class="mr-1.5 text-steel">✂&#xFE0E;</span>Scissors
+                <a href="/" class="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
+                    <svg aria-hidden="true" class="size-5" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <clipPath id="logo-cut-a"><polygon points="0,0 128,0 128,26.8 0,99.2"></polygon></clipPath>
+                            <clipPath id="logo-cut-b"><polygon points="0,99.2 128,26.8 128,128 0,128"></polygon></clipPath>
+                        </defs>
+                        <path
+                            d="M 83 33 A 21 21 0 1 0 64 63 A 21 21 0 1 1 45 93"
+                            fill="none"
+                            class="stroke-steel"
+                            stroke-width="13"
+                            stroke-linecap="round"
+                            clip-path="url(#logo-cut-a)"></path>
+                        <g transform="translate(2.5 4)">
+                            <path
+                                d="M 83 33 A 21 21 0 1 0 64 63 A 21 21 0 1 1 45 93"
+                                fill="none"
+                                class="stroke-steel"
+                                stroke-width="13"
+                                stroke-linecap="round"
+                                clip-path="url(#logo-cut-b)"></path>
+                        </g>
+                        <path
+                            d="M 10 93.5 L 40 76.6 M 88 49.4 L 118 32.5"
+                            fill="none"
+                            class="stroke-fog"
+                            stroke-width="3"
+                            stroke-dasharray="7 6"></path>
+                    </svg>
+                    Scissors
                 </a>
                 <div class="flex items-center gap-6 text-sm text-fog">
                     <a href="/downloads" class="transition-colors hover:text-paper">Downloads</a>

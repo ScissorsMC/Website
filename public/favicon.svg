@@ -1,4 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-    <rect width="100" height="100" rx="20" fill="#0b0d11"/>
-    <text x="50" y="72" font-size="64" text-anchor="middle" fill="#aebfd0" font-family="system-ui, sans-serif">✂</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+    <rect width="128" height="128" rx="26" fill="#0b0d11"/>
+    <defs>
+        <clipPath id="fa"><polygon points="0,0 128,0 128,26.8 0,99.2"/></clipPath>
+        <clipPath id="fb"><polygon points="0,99.2 128,26.8 128,128 0,128"/></clipPath>
+    </defs>
+    <path d="M 83 33 A 21 21 0 1 0 64 63 A 21 21 0 1 1 45 93" fill="none" stroke="#aebfd0" stroke-width="13" stroke-linecap="round" clip-path="url(#fa)"/>
+    <g transform="translate(2.5 4)"><path d="M 83 33 A 21 21 0 1 0 64 63 A 21 21 0 1 1 45 93" fill="none" stroke="#aebfd0" stroke-width="13" stroke-linecap="round" clip-path="url(#fb)"/></g>
+    <path d="M 10 93.5 L 40 76.6 M 88 49.4 L 118 32.5" fill="none" stroke="#8c95a4" stroke-width="3" stroke-dasharray="7 6"/>
 </svg>
