@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Page not found - Scissors">
+    <section class="flex min-h-[70vh] flex-col items-start justify-center py-24">
+        <h1
+            class="font-display text-7xl font-bold tracking-tight text-steel-bright line-through decoration-steel/60 decoration-dashed decoration-4 sm:text-8xl"
+        >
+            404
+        </h1>
+        <p class="font-display mt-6 text-2xl font-medium">This page got cut.</p>
+        <p class="mt-3 text-fog">
+            It may have moved, or it never existed. The downloads are still where you left them.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+            <a
+                href="/downloads"
+                class="font-display rounded-md bg-steel px-6 py-3 font-medium text-ink transition-colors hover:bg-steel-bright"
+            >
+                Downloads
+            </a>
+            <a
+                href="/"
+                class="font-display rounded-md border border-edge px-6 py-3 font-medium text-paper transition-colors hover:border-fog"
+            >
+                Home
+            </a>
+        </div>
+    </section>
+</Layout>
