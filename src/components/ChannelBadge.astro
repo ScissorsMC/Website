@@ -1,0 +1,19 @@
+---
+interface Props {
+    channel: string;
+}
+
+const { channel } = Astro.props;
+
+// Stable is the default state and gets no marker. Anything else (beta,
+// alpha, experimental) is flagged so it stands out in the build list.
+const label = channel.charAt(0) + channel.slice(1).toLowerCase();
+---
+
+{
+    channel !== 'STABLE' && (
+        <span class="rounded-full border border-warn/40 bg-warn/5 px-2.5 py-0.5 font-mono text-xs text-warn">
+            {label}
+        </span>
+    )
+}

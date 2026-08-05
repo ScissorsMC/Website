@@ -15,6 +15,16 @@ export const LEGACY_VERSIONS = [
     '1.17.1',
 ];
 
+// Folia branches on the same Jenkins multibranch project.
+export const FOLIA_LEGACY_VERSIONS = ['1.20.1'];
+
+// Folia jobs come from branches named "folia/<version>". Jenkins encodes the
+// slash in the job name, and the URL path encodes the percent sign again.
+export function jenkinsJobUrl(version: string, project: FillProject = 'scissors'): string {
+    const job = project === 'scissors-folia' ? `folia%252F${version}` : version;
+    return `${JENKINS_JOB}/${job}`;
+}
+
 export type SupportStatus = 'SUPPORTED' | 'DEPRECATED' | 'UNSUPPORTED';
 
 export interface FillVersion {
@@ -95,9 +105,13 @@ export interface JenkinsBuild {
     download: { name: string; url: string };
 }
 
-export async function getJenkinsBuilds(version: string): Promise<JenkinsBuild[] | null> {
+export async function getJenkinsBuilds(
+    version: string,
+    project: FillProject = 'scissors',
+): Promise<JenkinsBuild[] | null> {
+    const job = jenkinsJobUrl(version, project);
     const res = await fetch(
-        `${JENKINS_JOB}/${version}/api/json?tree=builds[number,timestamp,result,artifacts[fileName,relativePath]]`,
+        `${job}/api/json?tree=builds[number,timestamp,result,artifacts[fileName,relativePath]]`,
         { headers: { 'User-Agent': 'scissors-website (https://scissors.gg)' } },
     );
     if (!res.ok) return null;
@@ -118,10 +132,40 @@ export async function getJenkinsBuilds(version: string): Promise<JenkinsBuild[] 
                 time: new Date(b.timestamp).toISOString(),
                 download: {
                     name: jar.fileName,
-                    url: `${JENKINS_JOB}/${version}/${b.number}/artifact/${jar.relativePath}`,
+                    url: `${job}/${b.number}/artifact/${jar.relativePath}`,
                 },
             };
         });
+}
+
+// Responds with a redirect to the last successful Jenkins artifact for a
+// legacy version, like the old website did, but server-side.
+export async function legacyDownloadResponse(
+    version: string,
+    versions: string[],
+    project: FillProject = 'scissors',
+): Promise<Response> {
+    if (!versions.includes(version)) {
+        return new Response('Unknown version', { status: 404 });
+    }
+
+    const job = jenkinsJobUrl(version, project);
+    const res = await fetch(`${job}/lastSuccessfulBuild/api/json?tree=artifacts[relativePath]`, {
+        headers: { 'User-Agent': 'scissors-website (https://scissors.gg)' },
+    });
+    if (!res.ok) {
+        return new Response('Jenkins is unavailable right now. Try again in a few minutes.', {
+            status: 502,
+        });
+    }
+
+    const data: { artifacts?: { relativePath: string }[] } = await res.json();
+    const jar = data.artifacts?.find((a) => a.relativePath.endsWith('.jar'));
+    if (!jar) {
+        return new Response('No build artifact found for this version.', { status: 404 });
+    }
+
+    return Response.redirect(`${job}/lastSuccessfulBuild/artifact/${jar.relativePath}`, 302);
 }
 
 export function formatSize(bytes: number): string {

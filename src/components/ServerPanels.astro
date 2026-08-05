@@ -1,0 +1,60 @@
+---
+import type { FillProject } from '../lib/builds';
+
+interface Props {
+    project: FillProject;
+}
+
+const { project } = Astro.props;
+const name = project === 'scissors-folia' ? 'Scissors Folia' : 'Scissors';
+---
+
+<section aria-labelledby="panels-heading">
+    <h2 id="panels-heading" class="font-display text-xl font-medium">Server panels</h2>
+    <p class="mt-2 max-w-2xl text-sm text-fog">
+        Running Pterodactyl or Pelican? Import the {name} egg and the panel handles the
+        install for you.
+    </p>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="group relative overflow-hidden rounded-lg border border-edge bg-surface p-5">
+            <img
+                src="/panels/pterodactyl.svg"
+                alt=""
+                aria-hidden="true"
+                class="pointer-events-none absolute -right-6 -bottom-10 h-40 w-40 opacity-20 transition-opacity duration-300 group-hover:opacity-45"
+            />
+            <h3 class="font-display font-medium">Pterodactyl</h3>
+            <p class="mt-1 max-w-[75%] text-sm text-fog">
+                Admin area → Nests → Import Egg, then select the JSON file.
+            </p>
+            <a
+                href={`/eggs/pterodactyl-${project}.json`}
+                download
+                data-astro-prefetch="false"
+                class="mt-4 inline-block rounded-md border border-edge px-4 py-2 text-sm text-steel transition-colors hover:border-fog hover:text-steel-bright"
+            >
+                Download egg (JSON)
+            </a>
+        </div>
+        <div class="group relative overflow-hidden rounded-lg border border-edge bg-surface p-5">
+            <img
+                src="/panels/pelican.svg"
+                alt=""
+                aria-hidden="true"
+                class="pointer-events-none absolute -right-6 -bottom-10 h-40 w-40 opacity-20 transition-opacity duration-300 group-hover:opacity-45"
+            />
+            <h3 class="font-display font-medium">Pelican</h3>
+            <p class="mt-1 max-w-[75%] text-sm text-fog">
+                Admin area → Eggs → Import, then select the YAML file.
+            </p>
+            <a
+                href={`/eggs/pelican-${project}.yaml`}
+                download
+                data-astro-prefetch="false"
+                class="mt-4 inline-block rounded-md border border-edge px-4 py-2 text-sm text-steel transition-colors hover:border-fog hover:text-steel-bright"
+            >
+                Download egg (YAML)
+            </a>
+        </div>
+    </div>
+</section>
