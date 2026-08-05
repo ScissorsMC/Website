@@ -1,0 +1,103 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CutLine from '../../../components/CutLine.astro';
+import EditionChooser from '../../../components/EditionChooser.astro';
+import StatusBadge from '../../../components/StatusBadge.astro';
+import { getFillVersions, type FillVersion } from '../../../lib/builds';
+
+let fillVersions: FillVersion[] = [];
+let fillError = false;
+try {
+    fillVersions = await getFillVersions('scissors-folia');
+    fillError = fillVersions.length === 0;
+} catch {
+    fillError = true;
+}
+
+const supported = fillVersions.filter((version) => version.status === 'SUPPORTED');
+const retired = fillVersions.filter((version) => version.status !== 'SUPPORTED');
+---
+
+<Layout
+    title="Scissors Folia Downloads"
+    description="Download the Folia-based edition of Scissors for regionized Minecraft servers."
+>
+    <section class="pt-16 pb-12">
+        <p class="font-mono text-xs tracking-[0.18em] text-steel uppercase">Parallel regions, hardened payloads</p>
+        <h1 class="font-display mt-2 text-4xl font-bold tracking-tight">Scissors Folia</h1>
+        <p class="mt-3 max-w-2xl text-fog">
+            Scissors' exploit defenses layered over Folia's regionized multithreading.
+        </p>
+        <div class="mt-8"><EditionChooser active="folia" /></div>
+    </section>
+
+    <aside class="mb-10 rounded-lg border border-warn/30 bg-warn/5 p-5" aria-label="Folia compatibility warning">
+        <p class="font-display font-medium text-paper">Folia-aware plugins only</p>
+        <p class="mt-1 max-w-3xl text-sm leading-relaxed text-fog">
+            Folia does not have a single main thread. Use plugins that explicitly support its region scheduler and
+            declare <code class="font-mono text-steel">folia-supported: true</code>.
+        </p>
+    </aside>
+
+    <section aria-labelledby="current-heading">
+        <h2 id="current-heading" class="font-display text-xl font-medium">Current Folia builds</h2>
+        {
+            fillError ? (
+                <p class="mt-4 rounded-md border border-edge bg-surface p-4 text-sm text-fog">
+                    Scissors Folia builds are not available yet. Check back after the first release.
+                </p>
+            ) : supported.length === 0 ? (
+                <p class="mt-4 rounded-md border border-edge bg-surface p-4 text-sm text-fog">
+                    No Folia version is under active support right now.
+                </p>
+            ) : (
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    {supported.map((version) => (
+                        <a
+                            href={`/downloads/folia/${version.id}`}
+                            class="group flex items-center justify-between rounded-lg border border-edge bg-surface p-5 transition-colors hover:border-fog"
+                        >
+                            <div>
+                                <span class="font-display text-2xl font-bold">{version.id}</span>
+                                {version.javaMinimum && (
+                                    <p class="mt-1 font-mono text-xs text-fog">Java {version.javaMinimum}+</p>
+                                )}
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <StatusBadge status={version.status} />
+                                <span class="text-xl text-fog transition-colors group-hover:text-paper" aria-hidden="true">→</span>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            )
+        }
+    </section>
+
+    {
+        retired.length > 0 && (
+            <>
+                <div class="py-12"><CutLine /></div>
+                <section aria-labelledby="older-heading">
+                    <h2 id="older-heading" class="font-display text-xl font-medium">Older Folia builds</h2>
+                    <ul class="mt-4 divide-y divide-edge rounded-lg border border-edge bg-surface">
+                        {retired.map((version) => (
+                            <li class="flex items-center justify-between gap-4 p-4">
+                                <div class="flex items-center gap-4">
+                                    <span class="font-display w-16 font-bold">{version.id}</span>
+                                    <StatusBadge status={version.status} />
+                                </div>
+                                <a
+                                    href={`/downloads/folia/${version.id}`}
+                                    class="text-sm text-steel transition-colors hover:text-steel-bright"
+                                >
+                                    View builds →
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            </>
+        )
+    }
+</Layout>

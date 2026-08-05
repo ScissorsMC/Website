@@ -1,0 +1,70 @@
+---
+interface Props {
+    active: 'paper' | 'folia';
+}
+
+const { active } = Astro.props;
+
+const editions = [
+    {
+        id: 'paper',
+        name: 'Scissors',
+        eyebrow: 'Paper edition',
+        description: 'The standard build, with the broadest plugin compatibility.',
+        href: '/downloads',
+    },
+    {
+        id: 'folia',
+        name: 'Scissors Folia',
+        eyebrow: 'Regionized edition',
+        description: 'Parallel region ticking for servers built around Folia-aware plugins.',
+        href: '/downloads/folia',
+    },
+] as const;
+---
+
+<div class="grid gap-3 sm:grid-cols-2" aria-label="Scissors edition">
+    {
+        editions.map((edition) => {
+            const selected = edition.id === active;
+            return (
+                <a
+                    href={edition.href}
+                    aria-current={selected ? 'page' : undefined}
+                    class:list={[
+                        'group relative overflow-hidden rounded-lg border p-5 transition-colors',
+                        selected
+                            ? 'border-steel bg-raised'
+                            : 'border-edge bg-surface hover:border-fog',
+                    ]}
+                >
+                    <div
+                        class:list={[
+                            'absolute top-0 left-0 h-0.5 w-full transition-opacity',
+                            selected ? 'bg-steel opacity-100' : 'bg-fog opacity-0 group-hover:opacity-50',
+                        ]}
+                    />
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="font-mono text-[0.68rem] tracking-[0.16em] text-fog uppercase">
+                                {edition.eyebrow}
+                            </p>
+                            <h2 class="font-display mt-1 text-xl font-bold">{edition.name}</h2>
+                        </div>
+                        <span
+                            class:list={[
+                                'mt-0.5 rounded-full border px-2 py-0.5 font-mono text-[0.65rem] tracking-wide uppercase',
+                                selected
+                                    ? 'border-steel/50 text-steel-bright'
+                                    : 'border-edge text-fog',
+                            ]}
+                        >
+                            {selected ? 'Selected' : 'Choose'}
+                        </span>
+                    </div>
+                    <p class="mt-3 max-w-md text-sm leading-relaxed text-fog">{edition.description}</p>
+                </a>
+            );
+        })
+    }
+</div>

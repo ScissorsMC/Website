@@ -1,4 +1,5 @@
-const FILL = 'https://fill.scissors.gg/v3/projects/scissors';
+const FILL = 'https://fill.scissors.gg/v3/projects';
+export type FillProject = 'scissors' | 'scissors-folia';
 export const JENKINS_JOB = 'https://ci.plex.us.org/job/Scissors/job';
 
 // Mainline Jenkins jobs, newest first. All legacy versions are unsupported.
@@ -35,21 +36,21 @@ export interface FillBuild {
     } | null;
 }
 
-async function fillFetch(path: string): Promise<any | null> {
-    const res = await fetch(`${FILL}${path}`, {
+async function fillFetch(project: FillProject, path: string): Promise<any | null> {
+    const res = await fetch(`${FILL}/${project}${path}`, {
         headers: { 'User-Agent': 'scissors-website (https://scissors.gg)' },
     });
     if (!res.ok) return null;
     return res.json();
 }
 
-export async function getFillVersions(): Promise<FillVersion[]> {
-    const project = await fillFetch('');
+export async function getFillVersions(fillProject: FillProject = 'scissors'): Promise<FillVersion[]> {
+    const project = await fillFetch(fillProject, '');
     if (!project) return [];
     const ids: string[] = Object.values(project.versions as Record<string, string[]>).flat();
     return Promise.all(
         ids.map(async (id) => {
-            const data = await fillFetch(`/versions/${id}`);
+            const data = await fillFetch(fillProject, `/versions/${id}`);
             return {
                 id,
                 status: (data?.version?.support?.status ?? 'SUPPORTED') as SupportStatus,
@@ -59,8 +60,8 @@ export async function getFillVersions(): Promise<FillVersion[]> {
     );
 }
 
-export async function getFillVersion(id: string): Promise<FillVersion | null> {
-    const data = await fillFetch(`/versions/${id}`);
+export async function getFillVersion(id: string, project: FillProject = 'scissors'): Promise<FillVersion | null> {
+    const data = await fillFetch(project, `/versions/${id}`);
     if (!data) return null;
     return {
         id,
@@ -69,8 +70,8 @@ export async function getFillVersion(id: string): Promise<FillVersion | null> {
     };
 }
 
-export async function getFillBuilds(version: string): Promise<FillBuild[] | null> {
-    const builds = await fillFetch(`/versions/${version}/builds`);
+export async function getFillBuilds(version: string, project: FillProject = 'scissors'): Promise<FillBuild[] | null> {
+    const builds = await fillFetch(project, `/versions/${version}/builds`);
     if (!builds) return null;
     return builds.map((b: any) => ({
         id: b.id,

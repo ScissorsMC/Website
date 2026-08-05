@@ -17,6 +17,8 @@ export default defineConfig({
         '/': {maxAge: 300, swr: 600},
         '/downloads': {maxAge: 300, swr: 600},
         '/downloads/[version]': {maxAge: 300, swr: 600},
+        '/downloads/folia': {maxAge: 300, swr: 600},
+        '/downloads/folia/[version]': {maxAge: 300, swr: 600},
     },
     prefetch: {
         prefetchAll: true,
