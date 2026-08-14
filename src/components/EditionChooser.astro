@@ -1,6 +1,6 @@
 ---
 interface Props {
-    active: 'paper' | 'folia';
+    active: 'paper' | 'folia' | 'asp';
 }
 
 const { active } = Astro.props;
@@ -8,6 +8,7 @@ const { active } = Astro.props;
 const editions = [
     { id: 'paper', name: 'Scissors', href: '/downloads' },
     { id: 'folia', name: 'Scissors Folia', href: '/downloads/folia' },
+    { id: 'asp', name: 'Scissors ASP', href: '/downloads/asp' },
 ] as const;
 ---
 

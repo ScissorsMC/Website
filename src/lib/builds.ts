@@ -1,5 +1,5 @@
 const FILL = 'https://fill.scissors.gg/v3/projects';
-export type FillProject = 'scissors' | 'scissors-folia';
+export type FillProject = 'scissors' | 'scissors-folia' | 'scissors-asp';
 export const JENKINS_JOB = 'https://ci.plex.us.org/job/Scissors/job';
 
 // Mainline Jenkins jobs, newest first. All legacy versions are unsupported.
@@ -18,10 +18,19 @@ export const LEGACY_VERSIONS = [
 // Folia branches on the same Jenkins multibranch project.
 export const FOLIA_LEGACY_VERSIONS = ['1.20.1'];
 
-// Folia jobs come from branches named "folia/<version>". Jenkins encodes the
-// slash in the job name, and the URL path encodes the percent sign again.
+// ASP branches on the same Jenkins multibranch project, newest first.
+export const ASP_LEGACY_VERSIONS = ['1.20.4', '1.20.2', '1.20.1'];
+
+// Folia and ASP jobs come from branches named "folia/<version>" and
+// "slime/<version>". Jenkins encodes the slash in the job name, and the URL
+// path encodes the percent sign again.
 export function jenkinsJobUrl(version: string, project: FillProject = 'scissors'): string {
-    const job = project === 'scissors-folia' ? `folia%252F${version}` : version;
+    const job =
+        project === 'scissors-folia'
+            ? `folia%252F${version}`
+            : project === 'scissors-asp'
+              ? `slime%252F${version}`
+              : version;
     return `${JENKINS_JOB}/${job}`;
 }
 

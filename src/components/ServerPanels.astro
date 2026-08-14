@@ -6,7 +6,8 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const name = project === 'scissors-folia' ? 'Scissors Folia' : 'Scissors';
+const name =
+    project === 'scissors-folia' ? 'Scissors Folia' : project === 'scissors-asp' ? 'Scissors ASP' : 'Scissors';
 ---
 
 <section aria-labelledby="panels-heading">
